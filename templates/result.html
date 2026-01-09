@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard Tributario {{ anio_actual }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        body { background-color: #f8f9fa; }
+        .sidebar { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .main-content { padding: 20px; }
+        .stat-card { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-dark mb-4">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1">🇵🇪 Sistema de Análisis de Eficiencia Fiscal</span>
+            <a href="/" class="btn btn-outline-light btn-sm">Subir nuevos archivos</a>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3 mb-4">
+                <div class="sidebar">
+                    <h5 class="mb-3"><i class="bi bi-sliders"></i> Controles</h5>
+                    
+                    <label class="form-label text-muted">Seleccionar Año Visualizado:</label>
+                    <select class="form-select form-select-lg mb-4 border-primary" onchange="location = this.value;">
+                        {% for anio in lista_anios %}
+                            <option value="/dashboard?year={{ anio }}" {% if anio == anio_actual %}selected{% endif %}>
+                                {{ anio }}
+                            </option>
+                        {% endfor %}
+                    </select>
+
+                    <hr>
+                    <h5 class="mb-3"><i class="bi bi-download"></i> Descargas</h5>
+                    
+                    <div class="d-grid gap-2">
+                        <a href="data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{{ excel_data }}" 
+                           download="Ranking_Eficiencia_{{ anio_actual }}.xlsx" 
+                           class="btn btn-success">
+                           <i class="bi bi-file-earmark-excel"></i> Tabla en Excel
+                        </a>
+                        
+                        <a href="data:image/png;base64,{{ plot_url }}" 
+                           download="Grafico_Ranking_{{ anio_actual }}.png" 
+                           class="btn btn-primary">
+                           <i class="bi bi-image"></i> Gráfico PNG
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-9">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="stat-card text-center">
+                            <h4 class="mb-4">Visualización de Eficiencia ({{ anio_actual }})</h4>
+                            <img src="data:image/png;base64,{{ plot_url }}" class="img-fluid" style="max-height: 500px;" alt="Ranking Chart">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="stat-card">
+                            <h4 class="mb-3">Detalle de Datos</h4>
+                            <div class="table-responsive">
+                                {{ tabla | safe }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
